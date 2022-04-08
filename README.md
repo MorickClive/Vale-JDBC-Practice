@@ -11,7 +11,7 @@ Objective List:
 - [ ] Create a UI menu system
 	- [ ] User must be able to create a Person Object.
 	- [ ] Menu must loop until User exists application.
-- [ ] Store and Retrieve data from database
+- [ ] Store and Retrieve Person data from database
 	- [ ] CREATE
 	- [ ] READ
 	- [ ] UPDATE
