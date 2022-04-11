@@ -6,6 +6,8 @@ This database will have a simple table that stores a list of people.
 
 The application will allow users to display all stored people, add, update and delete.
 
+Review commit tree here: [commit tree](https://github.com/MorickClive/Vale-JDBC-Practice/network)
+
 Objective List:
 
 - [ ] Create a UI menu system
