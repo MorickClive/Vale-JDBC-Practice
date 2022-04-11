@@ -1,4 +1,4 @@
-package com.mc.main.ims.model;
+package com.mc.main.ims.models;
 
 public class Person {
 	
@@ -42,6 +42,15 @@ public class Person {
 
 	public void setAge(Integer age) {
 		this.age = age;
+	}
+
+	public PersonBuilder builder() {
+		return new PersonBuilder();
+	}
+
+	@Override
+	public String toString() {
+		return "Person [forename=" + forename + ", surname=" + surname + ", age=" + age + "]";
 	}
 	
 }
