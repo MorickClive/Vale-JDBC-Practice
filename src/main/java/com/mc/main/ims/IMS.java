@@ -6,6 +6,7 @@ import com.mc.main.ims.ui.CRUD;
 import com.mc.main.ims.ui.Domain;
 import com.mc.main.ims.ui.MainMenu;
 import com.mc.main.ims.util.Console;
+import com.mc.main.ims.util.DatabaseConnection;
 import com.mc.main.ims.util.ReportFormatter;
 
 public class IMS implements AutoCloseable {
@@ -14,6 +15,8 @@ public class IMS implements AutoCloseable {
 	private CRUDController<?> domain;
 	
 	public void start() {
+		DatabaseConnection.runSchema("Schema-Person.sql");
+		
 		menu();
 		
 		System.out.println("\nExiting Application...");
@@ -101,6 +104,7 @@ public class IMS implements AutoCloseable {
 
 	@Override
 	public void close() throws Exception {
+		DatabaseConnection.close();
 		Console.close();
 	}
 
