@@ -2,6 +2,7 @@ package com.mc.main.ims.models;
 
 public class Person {
 	
+	private Integer ID;
 	private String forename;
 	private String surname;
 	private Integer age;
@@ -13,11 +14,20 @@ public class Person {
 		age = 0;
 	}
 
-	public Person(String forename, String surname, Integer age) {
+	public Person(Integer ID, String forename, String surname, Integer age) {
 		super();
+		this.ID = ID;
 		this.forename = forename;
 		this.surname = surname;
 		this.age = age;
+	}
+
+	public Integer getID() {
+		return ID;
+	}
+
+	public void setID(Integer iD) {
+		ID = iD;
 	}
 
 	public String getForename() {
