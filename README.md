@@ -13,11 +13,11 @@ Objective List:
 - [X] Create a UI menu system
 	- [X] User must be able to create a Person Object.
 	- [X] Menu must loop until User exists application.
-- [ ] Store and Retrieve Person data from database
-	- [ ] CREATE
-	- [ ] READ
-	- [ ] UPDATE
-	- [ ] DELETE
+- [X] Store and Retrieve Person data from database
+	- [X] CREATE
+	- [X] READ
+	- [X] UPDATE
+	- [X] DELETE
 ---
 
 ## [Project Vale: Overview](https://github.com/MorickClive/Project-Vale/blob/main/README.md#project-vale)
