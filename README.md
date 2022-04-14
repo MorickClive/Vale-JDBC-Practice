@@ -36,14 +36,18 @@ Objective List:
 - [X] Create a UI menu system
 	- [X] User must be able to create a Person Object.
 	- [X] Menu must loop until User exits application.
-	
+
+---
+
 - [X] Person System
 	- [X] Store and Retrieve Person data from database
 		- [X] CREATE
 		- [X] READ
 		- [X] UPDATE
 		- [X] DELETE
-		
+
+---
+
 - [X] Plan Note Tracker System
 	- [X] Create ERD for Note Tracker
 - [ ] Implement Note Tracker System
