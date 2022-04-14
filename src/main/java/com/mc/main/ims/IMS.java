@@ -16,6 +16,7 @@ public class IMS implements AutoCloseable {
 	
 	public void start() {
 		DatabaseConnection.runSchema("Schema-Person.sql");
+		DatabaseConnection.runSchema("Schema-NoteTracker.sql");
 		
 		menu();
 		
