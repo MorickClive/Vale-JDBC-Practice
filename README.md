@@ -44,8 +44,8 @@ Objective List:
 		- [X] UPDATE
 		- [X] DELETE
 		
-- [ ] Plan Note Tracker System
-	- [ ] Create ERD for Note Tracker
+- [X] Plan Note Tracker System
+	- [X] Create ERD for Note Tracker
 - [ ] Implement Note Tracker System
 	- [ ] Add Schema for NoteTracker
 	- [ ] Implement POJOs
