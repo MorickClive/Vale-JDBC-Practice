@@ -52,8 +52,8 @@ public class DomainMenu {
 				domain = null;
 				System.out.println("Input error detected, please enter a valid choice.\n");
 			}
-			System.out.format("%s", 
-					!exitFlag ? "\n!!! Returning to Application Menu !!!\n\n" : "");
+			System.out.format("%s",
+					!exitFlag && !exitApplication ? ReportFormatter.div + "\n!!! Returning to Application Menu !!!\n\n" : "");
 		}
 	}
 
