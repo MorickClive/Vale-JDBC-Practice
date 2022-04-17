@@ -3,7 +3,7 @@ package com.mc.main.ims.models.builders;
 import com.mc.main.ims.models.Person;
 import com.mc.main.ims.util.Console;
 
-public class PersonBuilder {
+public class PersonBuilder implements POJOBuilder<Person> {
 	
 	private Person object;
 	

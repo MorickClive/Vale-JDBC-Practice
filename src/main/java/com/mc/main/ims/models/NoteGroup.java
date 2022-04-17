@@ -11,6 +11,7 @@ public class NoteGroup {
 	
 	public NoteGroup() {
 		super();
+		this.label = "???";
 		this.noteList = new ArrayList<>();
 	}
 
@@ -49,9 +50,9 @@ public class NoteGroup {
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		
-		result.append("ID[" + id + "], Label: " + label + "Notes:");
+		result.append("ID[" + id + "] - " + label.toUpperCase() + ":");
 		this.noteList.stream().forEach(x -> result.append("\n\t" + x.toString()));
-		result.append("\n]");
+		result.append(noteList.isEmpty() ? " [Empty!] ]"  : "\n]");
 		
 		return result.toString();
 	}

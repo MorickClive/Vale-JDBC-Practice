@@ -3,6 +3,8 @@ package com.mc.main.ims.util;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.h2.api.ErrorCode;
+
 import com.mc.main.ims.models.Note;
 import com.mc.main.ims.models.NoteGroup;
 import com.mc.main.ims.models.Person;
@@ -18,7 +20,8 @@ public class ModelParser {
 			model.setSurname(rs.getString(3));
 			model.setAge(rs.getInt(4));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			exceptionHandler(e);
+			;
 		}
 
 		return model;
@@ -32,7 +35,7 @@ public class ModelParser {
 			model.setHeader(rs.getString(3));
 			model.setContents(rs.getString(4));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			exceptionHandler(e);
 		}
 
 		return model;
@@ -45,10 +48,21 @@ public class ModelParser {
 			model.setId(rs.getInt(1));
 			model.setLabel(rs.getString(2));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			exceptionHandler(e);
 		}
 
 		return model;
+	}
+
+	private static void exceptionHandler(SQLException e) {
+		switch (e.getErrorCode()) {
+			case ErrorCode.NO_DATA_AVAILABLE:
+				System.out.println("\n\t!!! Entry Not Found !!!");
+				break;
+	
+			default:
+				e.printStackTrace();
+		}
 	}
 
 }

@@ -7,6 +7,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.h2.api.ErrorCode;
+
 import com.mc.main.ims.models.Note;
 import com.mc.main.ims.models.NoteGroup;
 import com.mc.main.ims.util.DatabaseConnection;
@@ -15,49 +17,52 @@ import com.mc.main.ims.util.ModelParser;
 public class NoteGroupDBA implements DatabaseAccessObject<NoteGroup> {
 
 	private Connection connection;
+	private Statement statement;
+	private String query;
+
+	private ResultSet rs;
+	private List<NoteGroup> list;
+
 	private static final String tableName = "NOTE_GROUP";
 
 	public NoteGroupDBA() {
 		super();
 		connection = DatabaseConnection.getConnection();
+		try {
+			statement = connection.createStatement();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public boolean create(NoteGroup noteGroup) {
-		String query;
-
 		try {
-			query = String.format("INSERT INTO %s(label) VALUES ('%s')",
-					tableName, noteGroup.getLabel());
-			connection.createStatement().execute(query);
-
-			return true;
+			query = String.format("INSERT INTO %s(label) VALUES ('%s')", tableName, noteGroup.getLabel());
+			statement.execute(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
+		return true;
 	}
 
 	@Override
 	public NoteGroup read(Integer id) {
 		NoteGroup model;
-		List<Note> listOfNotes= new ArrayList<>();
-		Statement statement;
-		ResultSet rs;
+		List<Note> list = new ArrayList<>();
 
 		try {
-			statement = connection.createStatement();
 			rs = statement.executeQuery(String.format("SELECT * FROM %s WHERE id=%d", tableName, id));
-
 			rs.next();
 			model = ModelParser.toNoteGroup(rs);
-			
+
 			rs = statement.executeQuery(String.format("SELECT * FROM NOTES WHERE GROUPID=%d", id));
-			while(rs.next()) {
-				listOfNotes.add(ModelParser.toNote(rs));
+			while (rs.next()) {
+				list.add(ModelParser.toNote(rs));
 			}
-			model.setNoteList(listOfNotes);
-			
+			model.setNoteList(list);
+
 			return model;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -67,11 +72,10 @@ public class NoteGroupDBA implements DatabaseAccessObject<NoteGroup> {
 
 	@Override
 	public List<NoteGroup> readAll() {
-		String query;
 		try {
 			query = String.format("SELECT * FROM %s", tableName);
-			ResultSet rs = connection.createStatement().executeQuery(query);
-			List<NoteGroup> list = new ArrayList<>();
+			ResultSet rs = statement.executeQuery(query);
+			list = new ArrayList<>();
 
 			while (rs.next()) {
 				list.add(ModelParser.toNoteGroup(rs));
@@ -86,12 +90,7 @@ public class NoteGroupDBA implements DatabaseAccessObject<NoteGroup> {
 
 	@Override
 	public void update(Integer id, NoteGroup replacer) {
-		Statement statement;
-		String query;
-
 		try {
-			statement = connection.createStatement();
-
 			query = String.format("UPDATE %s SET label = '%s' WHERE id=%d",
 					tableName, replacer.getLabel(), id);
 
@@ -103,18 +102,14 @@ public class NoteGroupDBA implements DatabaseAccessObject<NoteGroup> {
 
 	@Override
 	public boolean delete(Integer id) {
-		Statement statement;
-		String query;
+		String queryChild;
 		
 		try {
-			statement = connection.createStatement();
-			
-			query = String.format("DELETE FROM NOTES WHERE GROUPID=%d", id);
-			statement.execute(query);
+			queryChild = String.format("DELETE FROM NOTES WHERE GROUPID=%d", id);
+			statement.execute(queryChild);
 
-			query = String.format("DELETE FROM %s WHERE id=%d", 
+			query = String.format("DELETE FROM %s WHERE id=%d",
 					tableName, id);
-
 			return statement.execute(query);
 		} catch (SQLException e) {
 			e.printStackTrace();

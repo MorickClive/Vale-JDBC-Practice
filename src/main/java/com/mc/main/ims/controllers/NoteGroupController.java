@@ -62,7 +62,7 @@ public class NoteGroupController implements ListController<NoteGroup> {
 	}
 
 	@Override
-	public CRUDController<Note> modify() {
+	public CRUDInterface<Note> modify() {
 		System.out.println("Which group do you want to modify?");
 		subController.setForeignKey(Console.targetID());
 		
@@ -70,7 +70,8 @@ public class NoteGroupController implements ListController<NoteGroup> {
 	}
 
 	@Override
-	public String genericToString() {
-		return NoteGroup.class.getSimpleName();
+	public Class<Note> getSubMenuType() {
+		return Note.class;
 	}
+	
 }

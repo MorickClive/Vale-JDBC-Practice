@@ -6,7 +6,7 @@ import com.mc.main.ims.models.builders.NoteBuilder;
 import com.mc.main.ims.util.Console;
 import com.mc.main.ims.util.ReportFormatter;
 
-public class NoteController implements CRUDController<Note> {
+public class NoteController implements CRUDInterface<Note> {
 
 	private int id = 0;
 	private Note note;
@@ -31,13 +31,13 @@ public class NoteController implements CRUDController<Note> {
 		id = Console.targetID();
 		note = dba.read(id);
 
-		ReportFormatter.reportDivided("Results:", note.toString());
+		ReportFormatter.reportDivided("Results:", note.toStringFormatted());
 		System.out.println();
 	}
 
 	@Override
 	public void readAll() {
-		dba.readAll().stream().forEach((x) -> sb.append(String.format("ID[%d]: %s\n", x.getId(), x)));
+		dba.readAll().stream().forEach((x) -> sb.append(x.toStringFormatted() + "\n"));
 
 		ReportFormatter.reportDivided("Results:", sb.toString(), "End of Results.");
 		sb.setLength(0);
@@ -56,11 +56,6 @@ public class NoteController implements CRUDController<Note> {
 	public void delete() {
 		id = Console.targetID();
 		dba.delete(id);
-	}
-
-	@Override
-	public String genericToString() {
-		return Note.class.getSimpleName();
 	}
 	
 	public void setForeignKey(int id) {

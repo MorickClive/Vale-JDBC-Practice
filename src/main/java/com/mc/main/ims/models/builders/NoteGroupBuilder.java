@@ -3,7 +3,7 @@ package com.mc.main.ims.models.builders;
 import com.mc.main.ims.models.NoteGroup;
 import com.mc.main.ims.util.Console;
 
-public class NoteGroupBuilder {
+public class NoteGroupBuilder implements POJOBuilder<NoteGroup> {
 	
 	private NoteGroup object;
 	

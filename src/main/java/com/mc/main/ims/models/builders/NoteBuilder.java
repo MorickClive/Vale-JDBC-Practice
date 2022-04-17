@@ -3,7 +3,7 @@ package com.mc.main.ims.models.builders;
 import com.mc.main.ims.models.Note;
 import com.mc.main.ims.util.Console;
 
-public class NoteBuilder {
+public class NoteBuilder implements POJOBuilder<Note> {
 	
 	private Note object;
 	
