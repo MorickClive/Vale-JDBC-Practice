@@ -7,61 +7,53 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.h2.api.ErrorCode;
+
 import com.mc.main.ims.models.Person;
 import com.mc.main.ims.util.DatabaseConnection;
+import com.mc.main.ims.util.ModelParser;
 
 public class PersonDBA implements DatabaseAccessObject<Person> {
 
 	private Connection connection;
+	private Statement statement;
+	private String query;
+	
+	private ResultSet rs;
+	private List<Person> list;
 
 	public PersonDBA() {
 		super();
 		connection = DatabaseConnection.getConnection();
-	}
-
-	private Person toModel(ResultSet rs) {
-		Person model = new Person();
-
 		try {
-			model.setID(rs.getInt(1));
-			model.setForename(rs.getString(2));
-			model.setSurname(rs.getString(3));
-			model.setAge(rs.getInt(4));
+			statement = connection.createStatement();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
-		return model;
 	}
 
 	@Override
 	public boolean create(Person person) {
-		String query;
-
 		try {
 			query = String.format("INSERT INTO PERSON(forename, surname, age) VALUES ('%s', '%s', %d)",
 					person.getForename(), person.getSurname(), person.getAge());
-			connection.createStatement().execute(query);
-
-			return true;
+			statement.execute(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
+		return true;
 	}
 
 	@Override
 	public Person read(Integer id) {
 		Person model;
-		Statement statement;
-		ResultSet rs;
 
 		try {
-			statement = connection.createStatement();
 			rs = statement.executeQuery(String.format("SELECT * FROM PERSON WHERE id=%d", id));
 
 			rs.next();
-			model = toModel(rs);
+			model = ModelParser.toPerson(rs);
 
 			return model;
 		} catch (SQLException e) {
@@ -73,11 +65,11 @@ public class PersonDBA implements DatabaseAccessObject<Person> {
 	@Override
 	public List<Person> readAll() {
 		try {
-			ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM PERSON");
-			List<Person> list = new ArrayList<>();
+			rs = statement.executeQuery("SELECT * FROM PERSON");
+			list = new ArrayList<>();
 
 			while (rs.next()) {
-				list.add(toModel(rs));
+				list.add(ModelParser.toPerson(rs));
 			}
 
 			return list;
@@ -89,12 +81,7 @@ public class PersonDBA implements DatabaseAccessObject<Person> {
 
 	@Override
 	public void update(Integer id, Person replacer) {
-		Statement statement;
-		String query;
-
 		try {
-			statement = connection.createStatement();
-
 			query = String.format("UPDATE Person SET forename = '%s', surname = '%s', age = %d WHERE id=%d",
 					replacer.getForename(), replacer.getSurname(), replacer.getAge(), id);
 
@@ -106,14 +93,8 @@ public class PersonDBA implements DatabaseAccessObject<Person> {
 
 	@Override
 	public boolean delete(Integer id) {
-		Statement statement;
-		String query;
-		
 		try {
-			statement = connection.createStatement();
-
 			query = String.format("DELETE FROM PERSON WHERE id=%d", id);
-
 			return statement.execute(query);
 		} catch (SQLException e) {
 			e.printStackTrace();

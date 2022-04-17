@@ -50,15 +50,15 @@ Objective List:
 
 - [X] Plan Note Tracker System
 	- [X] Create ERD for Note Tracker
-- [ ] Implement Note Tracker System
+- [X] Implement Note Tracker System
 	- [X] Add Schema for NoteTracker
 	- [X] Implement POJOs
 		- [X] NoteGroups Model
 		- [X] Note Model
-	- [ ] Implement Controllers
-		- [ ] NoteGroups - CRUD functionality
-		- [ ] Notes - CRUD functionality
-	- [ ] Implement UI Sub-Menu for NoteTracker
+	- [X] Implement Controllers
+		- [X] NoteGroups - CRUD functionality
+		- [X] Notes - CRUD functionality
+	- [X] Implement UI Sub-Menu for NoteTracker
 	
 ---
 

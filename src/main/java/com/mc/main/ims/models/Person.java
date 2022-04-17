@@ -1,8 +1,10 @@
 package com.mc.main.ims.models;
 
+import com.mc.main.ims.models.builders.PersonBuilder;
+
 public class Person {
 	
-	private Integer ID;
+	private Integer id;
 	private String forename;
 	private String surname;
 	private Integer age;
@@ -16,18 +18,18 @@ public class Person {
 
 	public Person(Integer ID, String forename, String surname, Integer age) {
 		super();
-		this.ID = ID;
+		this.id = ID;
 		this.forename = forename;
 		this.surname = surname;
 		this.age = age;
 	}
 
 	public Integer getID() {
-		return ID;
+		return id;
 	}
 
 	public void setID(Integer iD) {
-		ID = iD;
+		id = iD;
 	}
 
 	public String getForename() {
@@ -60,7 +62,7 @@ public class Person {
 
 	@Override
 	public String toString() {
-		return "Person [forename=" + forename + ", surname=" + surname + ", age=" + age + "]";
+		return "ID["+id+"] [forename=" + forename + ", surname=" + surname + ", age=" + age + "]";
 	}
 	
 }

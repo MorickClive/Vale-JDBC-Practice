@@ -1,4 +1,4 @@
-package com.mc.main.ims.ui;
+package com.mc.main.ims.ui.tags;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

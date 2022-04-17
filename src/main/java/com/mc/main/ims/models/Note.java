@@ -8,6 +8,8 @@ public class Note {
 	
 	public Note() {
 		super();
+		this.header = "???";
+		this.contents = "???";
 	}
 
 	public Note(String header, String contents) {
@@ -40,4 +42,12 @@ public class Note {
 		this.contents = contents;
 	}
 
+	@Override
+	public String toString() {
+		return "ID[" + id + "] - " + header + ", Contents=\"" + contents + "\"";
+	}
+	
+	public String toStringFormatted() {
+		return "ID[" + id + "] - " + header.toUpperCase() + "\n\t\"" + contents + "\"";
+	}
 }
