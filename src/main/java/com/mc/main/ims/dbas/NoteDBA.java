@@ -7,26 +7,29 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mc.main.ims.models.Note;
 import com.mc.main.ims.models.Person;
 import com.mc.main.ims.util.DatabaseConnection;
 import com.mc.main.ims.util.ModelParser;
 
-public class PersonDBA implements DatabaseAccessObject<Person> {
+public class NoteDBA implements DatabaseAccessObject<Note> {
 
 	private Connection connection;
+	private int foreignKey;
+	private static final String tableName = "NOTES";
 
-	public PersonDBA() {
+	public NoteDBA() {
 		super();
 		connection = DatabaseConnection.getConnection();
 	}
 
 	@Override
-	public boolean create(Person person) {
+	public boolean create(Note note) {
 		String query;
 
 		try {
-			query = String.format("INSERT INTO PERSON(forename, surname, age) VALUES ('%s', '%s', %d)",
-					person.getForename(), person.getSurname(), person.getAge());
+			query = String.format("INSERT INTO %s(groupid, header, contents) VALUES (%d, '%s', '%s')",
+					tableName, foreignKey, note.getHeader(), note.getContents());
 			connection.createStatement().execute(query);
 
 			return true;
@@ -37,17 +40,19 @@ public class PersonDBA implements DatabaseAccessObject<Person> {
 	}
 
 	@Override
-	public Person read(Integer id) {
-		Person model;
+	public Note read(Integer id) {
+		Note model;
 		Statement statement;
 		ResultSet rs;
 
 		try {
 			statement = connection.createStatement();
-			rs = statement.executeQuery(String.format("SELECT * FROM PERSON WHERE id=%d", id));
+			System.out.println(String.format("SELECT * FROM %s WHERE id=%d", tableName, id));
+			
+			rs = statement.executeQuery(String.format("SELECT * FROM %s WHERE id=%d", tableName, id));
 
 			rs.next();
-			model = ModelParser.toPerson(rs);
+			model = ModelParser.toNote(rs);
 
 			return model;
 		} catch (SQLException e) {
@@ -57,13 +62,18 @@ public class PersonDBA implements DatabaseAccessObject<Person> {
 	}
 
 	@Override
-	public List<Person> readAll() {
+	public List<Note> readAll() {
+		String query;
+		
 		try {
-			ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM PERSON");
-			List<Person> list = new ArrayList<>();
+			query = String.format("SELECT * FROM %s WHERE groupid=%d",
+					tableName, foreignKey);
+			System.out.println(query);
+			ResultSet rs = connection.createStatement().executeQuery(query);
+			List<Note> list = new ArrayList<>();
 
 			while (rs.next()) {
-				list.add(ModelParser.toPerson(rs));
+				list.add(ModelParser.toNote(rs));
 			}
 
 			return list;
@@ -74,15 +84,15 @@ public class PersonDBA implements DatabaseAccessObject<Person> {
 	}
 
 	@Override
-	public void update(Integer id, Person replacer) {
+	public void update(Integer id, Note replacer) {
 		Statement statement;
 		String query;
 
 		try {
 			statement = connection.createStatement();
 
-			query = String.format("UPDATE Person SET forename = '%s', surname = '%s', age = %d WHERE id=%d",
-					replacer.getForename(), replacer.getSurname(), replacer.getAge(), id);
+			query = String.format("UPDATE %s SET header = '%s', contents = '%s' WHERE id=%d",
+					tableName, replacer.getHeader(), replacer.getContents(), id);
 
 			statement.execute(query);
 		} catch (SQLException e) {
@@ -98,13 +108,18 @@ public class PersonDBA implements DatabaseAccessObject<Person> {
 		try {
 			statement = connection.createStatement();
 
-			query = String.format("DELETE FROM PERSON WHERE id=%d", id);
+			query = String.format("DELETE FROM %s WHERE id=%d", 
+					tableName, id);
 
 			return statement.execute(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
+	}
+	
+	public void setForeignKey(int id) {
+		this.foreignKey = id;
 	}
 
 }

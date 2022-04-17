@@ -1,5 +1,7 @@
 package com.mc.main.ims.models;
 
+import com.mc.main.ims.models.builders.PersonBuilder;
+
 public class Person {
 	
 	private Integer ID;

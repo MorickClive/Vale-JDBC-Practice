@@ -18,7 +18,7 @@ public class Console {
 		}
 
 		public static String input() {
-			return hasScanner() ? input.next() : getScanner().next();
+			return hasScanner() ? input.nextLine() : getScanner().nextLine();
 		}
 		
 		public static int inputInt() {
@@ -36,6 +36,11 @@ public class Console {
 			}
 			
 			return result;
+		}
+		
+		public static int targetID() {
+			System.out.println("Please enter the id:");
+			return inputInt();
 		}
 		
 		public static void close() {

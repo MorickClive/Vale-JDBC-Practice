@@ -1,39 +1,34 @@
 package com.mc.main.ims.controllers;
 
-import java.util.HashMap;
-
 import com.mc.main.ims.dbas.PersonDBA;
 import com.mc.main.ims.models.Person;
-import com.mc.main.ims.models.PersonBuilder;
+import com.mc.main.ims.models.builders.PersonBuilder;
 import com.mc.main.ims.util.Console;
 import com.mc.main.ims.util.ReportFormatter;
 
 public class PersonController implements CRUDController<Person> {
 
-	private int id = 0;
+	private int id;
 	private Person person;
-	private HashMap<Integer, Person> storedPeople;
 	private StringBuilder sb;
 
 	private PersonDBA dba;
 
 	public PersonController() {
 		super();
-		storedPeople = new HashMap<>();
 		sb = new StringBuilder();
 		dba = new PersonDBA();
 	}
 
 	@Override
 	public void create() {
-		person = new PersonBuilder().construct(Console.getScanner());
+		person = new PersonBuilder().construct();
 		dba.create(person);
 	}
 
 	@Override
 	public void read() {
-		System.out.println("Please enter id:");
-		int id = Console.inputInt();
+		id = Console.targetID();
 		Person targ = dba.read(id);
 
 		if (targ != null) {
@@ -48,7 +43,6 @@ public class PersonController implements CRUDController<Person> {
 
 	@Override
 	public void readAll() {
-
 		dba.readAll().stream().forEach((x) -> sb.append(String.format("ID[%d]: %s\n", x.getID(), x)));
 
 		ReportFormatter.reportDivided("Results:", sb.toString(), "End of Results.");
@@ -59,12 +53,12 @@ public class PersonController implements CRUDController<Person> {
 	@Override
 	public void update() {
 		Person source, target;
-		int id = targetEntry();
+		id = Console.targetID();
 
 		source = dba.read(id);
 
 		if (source.getID() != null) {
-			target = new PersonBuilder().construct(Console.getScanner());
+			target = new PersonBuilder().construct();
 
 			dba.update(id, target);
 			readAll();
@@ -75,18 +69,7 @@ public class PersonController implements CRUDController<Person> {
 
 	@Override
 	public void delete() {
-		int id = targetEntry();
-
-		dba.delete(id);
-	}
-
-	private int targetEntry() {
-		int id;
-		Person target;
-		
-		readAll();
-		System.out.println("Please enter the id:");
-		return Console.inputInt();
+		dba.delete(Console.targetID());
 	}
 
 	@Override
