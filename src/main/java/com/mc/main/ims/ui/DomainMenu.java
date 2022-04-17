@@ -19,7 +19,7 @@ public class DomainMenu {
 
 	private CRUDInterface<?> domain;
 	private int choice;
-	private boolean exitFlag;
+	private boolean exitFlag, exitApplication;
 
 	public DomainMenu() {
 		super();
@@ -27,8 +27,9 @@ public class DomainMenu {
 
 	public void run() {
 		exitFlag = false;
+		exitApplication = false;
 
-		while (!exitFlag) {
+		while (!exitFlag && !exitApplication) {
 			printOptions("Information Management System", Domain.class);
 			choice = Console.inputInt();
 
@@ -42,8 +43,9 @@ public class DomainMenu {
 				listActions((ListController<?>) domain, NoteGroup.class);
 				break;
 
+			case 9:
 			case 0:
-				exitFlag = true;
+				exitApplication = true;
 				break;
 
 			default:
@@ -58,7 +60,7 @@ public class DomainMenu {
 	private void actions(CRUDInterface<?> domain, Class<?> type) {
 		boolean localFlag = false;
 
-		while (!localFlag) {
+		while (!localFlag && !exitApplication) {
 			printOptions(type.getSimpleName().toUpperCase() + " MENU:", CRUD.class);
 			choice = Console.inputInt();
 			
@@ -78,8 +80,11 @@ public class DomainMenu {
 			case 5:
 				domain.delete();
 				break;
-			case 0:
+			case 9:
 				localFlag = true;
+				break;
+			case 0:
+				exitApplication = true;
 				break;
 
 			default:
@@ -92,7 +97,7 @@ public class DomainMenu {
 	private void listActions(ListController<?> domain, Class<?> type) {
 		boolean localFlag = false;
 
-		while (!localFlag) {
+		while (!localFlag && !exitApplication) {
 			printOptions(type.getSimpleName().toUpperCase() + " MENU:", ListCRUD.class);
 			choice = Console.inputInt();
 
@@ -115,8 +120,11 @@ public class DomainMenu {
 			case 6:
 				domain.delete();
 				break;
-			case 0:
+			case 9:
 				localFlag = true;
+				break;
+			case 0:
+				exitApplication = true;
 				break;
 
 			default:
@@ -136,7 +144,11 @@ public class DomainMenu {
 			sb.append(String.format("\t%d). %s\n", counter++, option));
 		}
 
-		sb.append(String.format("%s\n\t0). %s", "=".repeat(40), isMainMenu ? "EXIT" : "RETURN"));
+		sb.append(String.format("%s\n\t%d). %s",
+				"=".repeat(40), isMainMenu ? 0 : 9, isMainMenu ? "EXIT" : "RETURN"));
+		if(!isMainMenu) { 
+			sb.append(String.format("\n\t0). %s", "EXIT APP"));
+		}
 
 		ReportFormatter.reportDivided(header, sb.toString());
 		System.out.println("Please enter your choice:");
