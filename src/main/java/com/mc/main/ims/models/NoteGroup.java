@@ -11,6 +11,7 @@ public class NoteGroup {
 	
 	public NoteGroup() {
 		super();
+		this.label = "???";
 		this.noteList = new ArrayList<>();
 	}
 
@@ -43,6 +44,17 @@ public class NoteGroup {
 
 	public void setNoteList(List<Note> noteList) {
 		this.noteList = noteList;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		
+		result.append("ID[" + id + "] - " + label.toUpperCase() + ":");
+		this.noteList.stream().forEach(x -> result.append("\n\t" + x.toString()));
+		result.append(noteList.isEmpty() ? " [Empty!] ]"  : "\n]");
+		
+		return result.toString();
 	}
 	
 }

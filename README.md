@@ -22,6 +22,11 @@ The objective for the "Note Tracker" system is to store notes that belong to gro
 
 This system expresses one-to-many relationships from a java-sql interaction.
 
+This database is built around an in memory database:
+`URL=jdbc:h2:mem:devdb`
+
+Connection is closed when application is closed, this is why DBAs only close ResultSets and Statements.
+
 ```
 Note groups should store the following:
 	- Label - should generalise the purpose of notes stored within
@@ -50,15 +55,15 @@ Objective List:
 
 - [X] Plan Note Tracker System
 	- [X] Create ERD for Note Tracker
-- [ ] Implement Note Tracker System
+- [X] Implement Note Tracker System
 	- [X] Add Schema for NoteTracker
 	- [X] Implement POJOs
 		- [X] NoteGroups Model
 		- [X] Note Model
-	- [ ] Implement Controllers
-		- [ ] NoteGroups - CRUD functionality
-		- [ ] Notes - CRUD functionality
-	- [ ] Implement UI Sub-Menu for NoteTracker
+	- [X] Implement Controllers
+		- [X] NoteGroups - CRUD functionality
+		- [X] Notes - CRUD functionality
+	- [X] Implement UI Sub-Menu for NoteTracker
 	
 ---
 

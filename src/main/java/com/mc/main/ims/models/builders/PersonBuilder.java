@@ -1,10 +1,9 @@
-package com.mc.main.ims.models;
+package com.mc.main.ims.models.builders;
 
-import java.util.Scanner;
-
+import com.mc.main.ims.models.Person;
 import com.mc.main.ims.util.Console;
 
-public class PersonBuilder {
+public class PersonBuilder implements POJOBuilder<Person> {
 	
 	private Person object;
 	
@@ -28,7 +27,7 @@ public class PersonBuilder {
 		return this;
 	}
 
-	public Person construct(Scanner scan) {
+	public Person construct() {
 		
 		System.out.println("Please enter first name:");
 		this.forename(Console.input());
