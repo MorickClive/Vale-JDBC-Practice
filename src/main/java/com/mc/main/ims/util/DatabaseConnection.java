@@ -15,14 +15,9 @@ import java.util.Properties;
 public class DatabaseConnection {
 
 	private static Connection activeConnection;
-	private static String URL;
-	private static String username;
-	private static String password;
+	private static Properties credentials;
 
-	public DatabaseConnection(Connection activeConnection) {
-		super();
-		this.activeConnection = activeConnection;
-	}
+	private DatabaseConnection() { super(); }
 
 	public static Connection getConnection() {
 		if (activeConnection == null) {
@@ -32,34 +27,38 @@ public class DatabaseConnection {
 	}
 
 	private static void initConnection() {
-			try {
-				readProperties();
-				activeConnection = DriverManager.getConnection(URL, username, password);
-			} catch (SQLException | IOException e) {
-				e.printStackTrace();
+		String URL, username, password;
+
+		try {
+
+			if (credentials == null) {
+				readProperties("db.properties");
 			}
+
+			URL = (String) credentials.get("URL");// + "?serverTimezone=UTC";
+			username = (String) credentials.get("Username");
+			password = (String) credentials.get("Password");
+
+			activeConnection = DriverManager.getConnection(URL, username, password);
+		} catch (SQLException | IOException e) {
+			e.printStackTrace();
+		}
 	}
 
-	private static void readProperties() throws IOException {
-		Properties props = new Properties();
-		InputStream is = DatabaseConnection.class.getClassLoader().getResourceAsStream("db.properties");
-		
-		props.load(is);
+	private static void readProperties(String properties) throws IOException {
+		credentials = new Properties();
+		InputStream is = DatabaseConnection.class.getClassLoader().getResourceAsStream(properties);
 
-		URL = (String) props.get("URL");// + "?serverTimezone=UTC";
-		username = (String) props.get("Username");
-		password = (String) props.get("Password");		
+		credentials.load(is);
 	}
-	
+
 	public static void runSchema(String resourceName) {
 		InputStream is = DatabaseConnection.class.getClassLoader().getResourceAsStream(resourceName);
 
 		try {
 			Statement statement = getConnection().createStatement();
-			new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))
-			.lines()
-			.forEach(x -> {
-				if(x.length() > 0) {
+			new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8)).lines().forEach(x -> {
+				if (x.length() > 0) {
 					try {
 						statement.execute(x);
 					} catch (SQLException e) {
@@ -67,26 +66,13 @@ public class DatabaseConnection {
 					}
 				}
 			});
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	public static void testQuery() {
-		String debugQuery = "SHOW DATABASES";
-		try {
-			ResultSet rs = getConnection().createStatement().executeQuery(debugQuery);
-			
-			while(rs.next()) {
-				System.out.println(rs.getString(1));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
+
 	public static void close() {
 		try {
 			if (activeConnection != null) {

@@ -6,8 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.h2.api.ErrorCode;
+import java.util.function.Predicate;
 
 import com.mc.main.ims.models.Person;
 import com.mc.main.ims.util.DatabaseConnection;
@@ -16,27 +15,20 @@ import com.mc.main.ims.util.ModelParser;
 public class PersonDBA implements DatabaseAccessObject<Person> {
 
 	private Connection connection;
-	private Statement statement;
-	private String query;
-	
-	private ResultSet rs;
 	private List<Person> list;
+	private String query;
 
 	public PersonDBA() {
 		super();
 		connection = DatabaseConnection.getConnection();
-		try {
-			statement = connection.createStatement();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override
 	public boolean create(Person person) {
-		try {
-			query = String.format("INSERT INTO PERSON(forename, surname, age) VALUES ('%s', '%s', %d)",
-					person.getForename(), person.getSurname(), person.getAge());
+		query = String.format("INSERT INTO PERSON(forename, surname, age) VALUES ('%s', '%s', %d)",
+				person.getForename(), person.getSurname(), person.getAge());
+		
+		try ( Statement statement = connection.createStatement() ) {
 			statement.execute(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -48,13 +40,12 @@ public class PersonDBA implements DatabaseAccessObject<Person> {
 	@Override
 	public Person read(Integer id) {
 		Person model;
+		query = String.format("SELECT * FROM PERSON WHERE id=%d", id);
 
-		try {
-			rs = statement.executeQuery(String.format("SELECT * FROM PERSON WHERE id=%d", id));
-
+		try ( Statement statement = connection.createStatement();
+			  ResultSet rs = statement.executeQuery(query);) {
 			rs.next();
 			model = ModelParser.toPerson(rs);
-
 			return model;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -64,8 +55,10 @@ public class PersonDBA implements DatabaseAccessObject<Person> {
 
 	@Override
 	public List<Person> readAll() {
-		try {
-			rs = statement.executeQuery("SELECT * FROM PERSON");
+		query = "SELECT * FROM PERSON";
+		
+		try ( Statement statement = connection.createStatement();
+			  ResultSet rs = statement.executeQuery(query);) {
 			list = new ArrayList<>();
 
 			while (rs.next()) {
@@ -81,11 +74,12 @@ public class PersonDBA implements DatabaseAccessObject<Person> {
 
 	@Override
 	public void update(Integer id, Person replacer) {
-		try {
-			query = String.format("UPDATE Person SET forename = '%s', surname = '%s', age = %d WHERE id=%d",
-					replacer.getForename(), replacer.getSurname(), replacer.getAge(), id);
-
+		query = String.format("UPDATE Person SET forename = '%s', surname = '%s', age = %d WHERE id=%d",
+				replacer.getForename(), replacer.getSurname(), replacer.getAge(), id);
+		
+		try ( Statement statement = connection.createStatement();) {
 			statement.execute(query);
+			connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -93,8 +87,9 @@ public class PersonDBA implements DatabaseAccessObject<Person> {
 
 	@Override
 	public boolean delete(Integer id) {
-		try {
-			query = String.format("DELETE FROM PERSON WHERE id=%d", id);
+		query = String.format("DELETE FROM PERSON WHERE id=%d", id);
+		
+		try ( Statement statement = connection.createStatement();) {
 			return statement.execute(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
