@@ -17,10 +17,7 @@ import com.mc.main.ims.util.ModelParser;
 public class NoteGroupDBA implements DatabaseAccessObject<NoteGroup> {
 
 	private Connection connection;
-	private Statement statement;
-	private String query;
-
-	private ResultSet rs;
+	private String query, queryChild;
 	private List<NoteGroup> list;
 
 	private static final String tableName = "NOTE_GROUP";
@@ -28,17 +25,13 @@ public class NoteGroupDBA implements DatabaseAccessObject<NoteGroup> {
 	public NoteGroupDBA() {
 		super();
 		connection = DatabaseConnection.getConnection();
-		try {
-			statement = connection.createStatement();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override
 	public boolean create(NoteGroup noteGroup) {
-		try {
-			query = String.format("INSERT INTO %s(label) VALUES ('%s')", tableName, noteGroup.getLabel());
+		query = String.format("INSERT INTO %s(label) VALUES ('%s')", tableName, noteGroup.getLabel());
+		
+		try (Statement statement = connection.createStatement()) {
 			statement.execute(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -50,19 +43,27 @@ public class NoteGroupDBA implements DatabaseAccessObject<NoteGroup> {
 	@Override
 	public NoteGroup read(Integer id) {
 		NoteGroup model;
-		List<Note> list = new ArrayList<>();
+		
+		query = String.format("SELECT * FROM %s WHERE id=%d", tableName, id);
+		queryChild = String.format("SELECT * FROM NOTES WHERE GROUPID=%d", id);
 
-		try {
-			rs = statement.executeQuery(String.format("SELECT * FROM %s WHERE id=%d", tableName, id));
+		try (	Statement statement = connection.createStatement();
+				ResultSet rs = statement.executeQuery(query);) {
 			rs.next();
 			model = ModelParser.toNoteGroup(rs);
-
-			rs = statement.executeQuery(String.format("SELECT * FROM NOTES WHERE GROUPID=%d", id));
+		}catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		try (	Statement statement = connection.createStatement();
+				ResultSet rs = statement.executeQuery(queryChild);) {
+			List<Note> list = new ArrayList<>();
+			
 			while (rs.next()) {
 				list.add(ModelParser.toNote(rs));
 			}
 			model.setNoteList(list);
-
 			return model;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -72,10 +73,11 @@ public class NoteGroupDBA implements DatabaseAccessObject<NoteGroup> {
 
 	@Override
 	public List<NoteGroup> readAll() {
-		try {
-			query = String.format("SELECT * FROM %s", tableName);
-			ResultSet rs = statement.executeQuery(query);
-			list = new ArrayList<>();
+		query = String.format("SELECT * FROM %s", tableName);
+		list = new ArrayList<>();
+		
+		try (	Statement statement = connection.createStatement();
+				ResultSet rs = statement.executeQuery(query);) {
 
 			while (rs.next()) {
 				list.add(ModelParser.toNoteGroup(rs));
@@ -84,16 +86,16 @@ public class NoteGroupDBA implements DatabaseAccessObject<NoteGroup> {
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return new ArrayList<>();
+			return list;
 		}
 	}
 
 	@Override
 	public void update(Integer id, NoteGroup replacer) {
-		try {
-			query = String.format("UPDATE %s SET label = '%s' WHERE id=%d",
-					tableName, replacer.getLabel(), id);
-
+		query = String.format("UPDATE %s SET label = '%s' WHERE id=%d",
+				tableName, replacer.getLabel(), id);
+		
+		try ( Statement statement = connection.createStatement() ) {
 			statement.execute(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -102,14 +104,11 @@ public class NoteGroupDBA implements DatabaseAccessObject<NoteGroup> {
 
 	@Override
 	public boolean delete(Integer id) {
-		String queryChild;
+		queryChild = String.format("DELETE FROM NOTES WHERE GROUPID=%d", id);
+		query = String.format("DELETE FROM %s WHERE id=%d", tableName, id);
 		
-		try {
-			queryChild = String.format("DELETE FROM NOTES WHERE GROUPID=%d", id);
+		try ( Statement statement = connection.createStatement() ) {
 			statement.execute(queryChild);
-
-			query = String.format("DELETE FROM %s WHERE id=%d",
-					tableName, id);
 			return statement.execute(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
