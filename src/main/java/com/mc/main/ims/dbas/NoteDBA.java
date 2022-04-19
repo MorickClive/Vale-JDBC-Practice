@@ -28,11 +28,13 @@ public class NoteDBA implements DatabaseAccessObject<Note> {
 
 	@Override
 	public boolean create(Note note) {
-		query = String.format("INSERT INTO %s(groupid, header, contents) VALUES (%d, '%s', '%s')", tableName,
-				foreignKey, note.getHeader(), note.getContents());
-		
-		try (Statement statement = connection.createStatement()) {
-			return statement.execute(query);
+		query = String.format("INSERT INTO %s(groupid, header, contents) VALUES (?, ?, ?)", tableName);
+
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setInt(1, foreignKey);
+			statement.setString(2, note.getHeader());
+			statement.setString(3, note.getContents());
+			return statement.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -41,12 +43,15 @@ public class NoteDBA implements DatabaseAccessObject<Note> {
 
 	@Override
 	public Note read(Integer id) {
-		query = String.format("SELECT * FROM %s WHERE id=%d", tableName, id);
+		query = String.format("SELECT * FROM %s WHERE id=?", tableName);
 
-		try (	Statement statement = connection.createStatement();
-				ResultSet rs = statement.executeQuery(query);) {
-			rs.next();
-			return ModelParser.toNote(rs);
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setInt(1, id);
+
+			try (ResultSet rs = statement.executeQuery()) {
+				rs.next();
+				return ModelParser.toNote(rs);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -55,15 +60,18 @@ public class NoteDBA implements DatabaseAccessObject<Note> {
 
 	@Override
 	public List<Note> readAll() {
-		query = String.format("SELECT * FROM %s WHERE groupid=%d", tableName, foreignKey);
+		query = String.format("SELECT * FROM %s WHERE groupid=?", tableName);
 
-		try (	Statement statement = connection.createStatement();
-				ResultSet rs = statement.executeQuery(query);) {
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setInt(1, foreignKey);
 			list = new ArrayList<>();
-			while (rs.next()) {
-				list.add(ModelParser.toNote(rs));
+			
+			try (ResultSet rs = statement.executeQuery()) {
+				while (rs.next()) {
+					list.add(ModelParser.toNote(rs));
+				}
+				return list;
 			}
-			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return list;
@@ -72,11 +80,13 @@ public class NoteDBA implements DatabaseAccessObject<Note> {
 
 	@Override
 	public void update(Integer id, Note replacer) {
-		query = String.format("UPDATE %s SET header = '%s', contents = '%s' WHERE id=%d", tableName,
-				replacer.getHeader(), replacer.getContents(), id);
+		query = String.format("UPDATE %s SET header=?, contents=? WHERE id=?", tableName);
 
-		try (Statement statement = connection.createStatement()) {
-			statement.execute(query);
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setString(1, replacer.getHeader());
+			statement.setString(2, replacer.getContents());
+			statement.setInt(3, id);
+			statement.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -84,10 +94,11 @@ public class NoteDBA implements DatabaseAccessObject<Note> {
 
 	@Override
 	public boolean delete(Integer id) {
-		query = String.format("DELETE FROM %s WHERE id=%d", tableName, id);
+		query = String.format("DELETE FROM %s WHERE id=?", tableName);
 
-		try (Statement statement = connection.createStatement()) {
-			return statement.execute(query);
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setInt(1, id);
+			return statement.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
