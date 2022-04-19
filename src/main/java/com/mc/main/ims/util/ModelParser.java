@@ -21,9 +21,8 @@ public class ModelParser {
 			model.setAge(rs.getInt(4));
 		} catch (SQLException e) {
 			exceptionHandler(e);
-			;
 		}
-
+		
 		return model;
 	}
 
