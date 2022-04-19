@@ -1,16 +1,14 @@
 package com.mc.main.ims.dbas;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.h2.api.ErrorCode;
-
 import com.mc.main.ims.models.Note;
-import com.mc.main.ims.models.Person;
 import com.mc.main.ims.util.DatabaseConnection;
 import com.mc.main.ims.util.ModelParser;
 
