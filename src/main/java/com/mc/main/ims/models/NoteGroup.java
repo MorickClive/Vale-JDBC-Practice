@@ -51,8 +51,8 @@ public class NoteGroup {
 		StringBuilder result = new StringBuilder();
 		
 		result.append("ID[" + id + "] - " + label.toUpperCase() + ":");
-		this.noteList.stream().forEach(x -> result.append("\n\t" + x.toString()));
-		result.append(noteList.isEmpty() ? " [Empty!] ]"  : "\n]");
+		this.noteList.stream().forEach(x -> result.append("\n   "+x));
+		result.append(noteList.isEmpty() ? "[Empty!] ]"  : "\n]");
 		
 		return result.toString();
 	}

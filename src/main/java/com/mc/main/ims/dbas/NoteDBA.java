@@ -71,6 +71,9 @@ public class NoteDBA implements DatabaseAccessObject<Note> {
 					list.add(ModelParser.toNote(rs));
 				}
 				return list;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return list;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

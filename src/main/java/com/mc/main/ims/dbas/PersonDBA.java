@@ -51,6 +51,9 @@ public class PersonDBA implements DatabaseAccessObject<Person> {
 				rs.next();
 				model = ModelParser.toPerson(rs);
 				return model;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

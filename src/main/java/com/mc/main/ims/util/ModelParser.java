@@ -32,7 +32,7 @@ public class ModelParser {
 		try {
 			model.setId(rs.getInt(1));
 			model.setHeader(rs.getString(3));
-			model.setContents(rs.getString(4));
+			model.setContents(rs.getString(4).translateEscapes());
 		} catch (SQLException e) {
 			exceptionHandler(e);
 		}

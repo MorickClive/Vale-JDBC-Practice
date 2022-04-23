@@ -52,6 +52,9 @@ public class NoteGroupDBA implements DatabaseAccessObject<NoteGroup> {
 			try (ResultSet rs = statement.executeQuery()) {
 				rs.next();
 				model = ModelParser.toNoteGroup(rs);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -70,6 +73,9 @@ public class NoteGroupDBA implements DatabaseAccessObject<NoteGroup> {
 				model.setNoteList(list);
 
 				return model;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -123,6 +129,9 @@ public class NoteGroupDBA implements DatabaseAccessObject<NoteGroup> {
 				statement.setInt(1, id);
 
 				return statement.execute();
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
