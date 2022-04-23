@@ -31,13 +31,13 @@ public class NoteController implements CRUDInterface<Note> {
 		id = Console.targetID();
 		note = dba.read(id);
 
-		ReportFormatter.reportDivided("Results:", note.toStringFormatted());
+		ReportFormatter.reportDivided("Results:", note.toString());
 		System.out.println();
 	}
 
 	@Override
 	public void readAll() {
-		dba.readAll().stream().forEach((x) -> sb.append(x.toStringFormatted() + "\n"));
+		dba.readAll().stream().forEach((x) -> sb.append("\n" + x));
 
 		ReportFormatter.reportDivided("Results:", sb.toString(), "End of Results.");
 		sb.setLength(0);

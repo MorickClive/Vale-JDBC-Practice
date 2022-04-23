@@ -55,9 +55,9 @@ public class DatabaseConnection {
 	public static void runSchema(String resourceName) {
 		InputStream is = DatabaseConnection.class.getClassLoader().getResourceAsStream(resourceName);
 
-		try {
-			Statement statement = getConnection().createStatement();
-			new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8)).lines().forEach(x -> {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+			 Statement statement = getConnection().createStatement();) {			
+			reader.lines().forEach(x -> {
 				if (x.length() > 0) {
 					try {
 						statement.execute(x);
@@ -66,8 +66,7 @@ public class DatabaseConnection {
 					}
 				}
 			});
-
-		} catch (SQLException e) {
+		} catch (SQLException | IOException e) {
 			e.printStackTrace();
 		}
 
